@@ -2,46 +2,36 @@ package main
 
 import (
    "fmt"
+   "context"
    "log"
    "net"
-   "net/rpc"
+   "google.golang.org/grpc"
+   pb "github.com/ijc-90/snake-multiplayer/gamecommunicator"
 )
 
-type Listener int
-type Reply struct {
-   Data string
+
+const (
+   port = ":50051"
+)
+
+type server struct {
+   pb.UnimplementedGameCommunicatorServer
 }
 
-func (l *Listener) GetLine(line []byte, reply *Reply) error {
-   rv := string(line)
-   fmt.Printf("Receive: %v\n", rv)
-   *reply = Reply{rv}
-   return nil
+func (s *server) SetDirection(ctx context.Context, in *pb.DirectionRequest) (*pb.DirectionResponse, error) {
+   log.Printf("Received: %d , %d", in.GetSnakeNumber(), in.GetSnakeDirection())
+   return &pb.DirectionResponse{Received: 1 }, nil
 }
 
 func main() {
-   fmt.Println("A")
-   addy, err := net.ResolveTCPAddr("tcp", "0.0.0.0:12345")
+   fmt.Println("Starting server")
+   lis, err := net.Listen("tcp", port)
    if err != nil {
-      log.Fatal(err)
+      log.Fatalf("failed to listen: %v", err)
    }
-   inbound, err := net.ListenTCP("tcp", addy)
-   if err != nil {
-      log.Fatal(err)
+   s := grpc.NewServer()
+   pb.RegisterGameCommunicatorServer(s, &server{})
+   if err := s.Serve(lis); err != nil {
+      log.Fatalf("failed to serve: %v", err)
    }
-   fmt.Println("B")
-   listener := new(Listener)
-   rpc.Register(listener)
-   fmt.Println("C")
-   rpc.Accept(inbound)
-   fmt.Println("D")
-   fmt.Println("Hello World")
 }
-
-/*func main(){
-	c := 1
-
-
-	fmt.Println("Hello World")
-	fmt.Println(c)
-}*/

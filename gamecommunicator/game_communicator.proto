@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+service GameCommunicator {
+    // Sets a snake direction.
+    rpc SetDirection(DirectionRequest) returns (DirectionResponse) {}
+
+    rpc notifyGameState(GameStateRequest) returns (GameStateResponse) {}
+
+}
+
+
+    message DirectionRequest {
+        int32 snakeNumber = 1;
+        int32 snakeDirection = 2;
+    }
+
+    message DirectionResponse {
+        int32 received = 1;
+    }
+
+    message GameStateRequest {
+        int32 gameState = 1;
+    }
+
+    message GameStateResponse {
+        int32 received = 1;
+    }
