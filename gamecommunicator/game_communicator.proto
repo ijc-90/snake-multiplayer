@@ -6,6 +6,8 @@ service GameCommunicator {
 
     rpc notifyGameState(GameStateRequest) returns (GameStateResponse) {}
 
+    rpc setDirectionsAndUpdateGame(stream DirectionRequest) returns (stream GameStateRequest) {}
+
 }
 
 
