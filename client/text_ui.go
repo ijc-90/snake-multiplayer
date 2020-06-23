@@ -1,19 +1,19 @@
 package main
 import (
-	constants "github.com/ijc-90/snake-multiplayer/commons"
+	commons "github.com/ijc-90/snake-multiplayer/commons"
 	"fmt"
 	"strings"
 )
 
-func DrawMap(aMap Map){
-	topBottomLine := strings.Repeat("#", constants.Width + 2)
+func DrawMap(aMap commons.Map){
+	topBottomLine := strings.Repeat("#", aMap.Width + 2)
 	fmt.Println(topBottomLine)
-	for y := 0; y < constants.Height ; y ++ {
+	for y := 0; y < aMap.Height ; y ++ {
 		fmt.Printf("#")
-		for x := 0; x < constants.Width ; x ++ {
-			if y == aMap.snakePosition.y && x == aMap.snakePosition.x{
+		for x := 0; x < aMap.Width ; x ++ {
+			if y == aMap.SnakePosition.Y && x == aMap.SnakePosition.X{
 				fmt.Printf("S")
-			}else if y == aMap.fruitPosition.y && x == aMap.fruitPosition.x{
+			}else if y == aMap.FruitPosition.Y && x == aMap.FruitPosition.X{
 				fmt.Printf("F")
 			}else{
 				fmt.Printf(" ")

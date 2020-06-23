@@ -7,7 +7,7 @@ import (
 	"time"
 	"google.golang.org/grpc"
 	pb "github.com/ijc-90/snake-multiplayer/gamecommunicator"
-	constants "github.com/ijc-90/snake-multiplayer/commons"
+	commons "github.com/ijc-90/snake-multiplayer/commons"
 )
 
 const (
@@ -15,13 +15,13 @@ const (
 )
 
 func main() {
-	snakePosition := Point{1,1}
-	fruitPosition := Point{3,3}
-	mapa := Map{
-		snakePosition: snakePosition,
-		fruitPosition: fruitPosition,
-		width: constants.Width,
-		height: constants.Height}
+	snakePosition := commons.Point{X:12,Y:4}
+	fruitPosition := commons.Point{X:3,Y:3}
+	mapa := commons.Map{
+		SnakePosition: snakePosition,
+		FruitPosition: fruitPosition,
+		Width: commons.Width,
+		Height: commons.Height}
 
 	DrawMap(mapa)
 	// Set up a connection to the server.
