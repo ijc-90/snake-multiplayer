@@ -7,7 +7,8 @@ import (
 
 func DrawMap(aMap commons.Map){
 	topBottomLine := strings.Repeat("#", (aMap.Width + 2)*3)
-	fmt.Println(topBottomLine)
+	fmt.Printf(topBottomLine)
+	fmt.Printf("\n")
 	for y := 0; y < aMap.Height ; y ++ {
 		fmt.Printf("###")
 		for x := 0; x < aMap.Width ; x ++ {
@@ -21,6 +22,8 @@ func DrawMap(aMap commons.Map){
 		}
 
 		fmt.Println("###")
+		fmt.Printf("\n")
 	}
 	fmt.Println(topBottomLine)
+	fmt.Printf("\n")
 }
