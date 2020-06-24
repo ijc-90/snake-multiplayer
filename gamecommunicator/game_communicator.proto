@@ -21,9 +21,22 @@ service GameCommunicator {
     }
 
     message GameStateRequest {
-        int32 gameState = 1;
+        Map gameState = 1;
     }
 
     message GameStateResponse {
         int32 received = 1;
+    }
+
+    message Map{
+        Point snakePosition = 1;
+        Point fruitPosition = 2;
+        int32 snakeDirection = 3;
+        int32 height = 4;
+        int32 width = 5;
+    }
+
+    message Point{
+        int32 x = 1;
+        int32 y = 2;
     }

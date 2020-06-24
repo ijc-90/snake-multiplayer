@@ -3,11 +3,14 @@ package main
 import (
    "fmt"
    "context"
+   "math/rand"
    "io"
    "log"
+   "time"
    "net"
    "google.golang.org/grpc"
    pb "github.com/ijc-90/snake-multiplayer/gamecommunicator"
+   commons "github.com/ijc-90/snake-multiplayer/commons"
 )
 
 
@@ -20,6 +23,43 @@ type server struct {
 }
 
 func (s *server) SetDirectionsAndUpdateGame(stream pb.GameCommunicator_SetDirectionsAndUpdateGameServer) error {
+   var aMap *commons.Map
+   aMap = &commons.Map{
+      SnakePosition: commons.Point{X:0, Y:0},
+      SnakeDirection: 1,
+      Width: commons.Width,
+      Height: commons.Height,
+      FruitPosition: commons.Point{X:0, Y:1},
+   }
+   go func(mapPointer *commons.Map) error{
+      for{
+         fmt.Println("Sending game state")
+         // Random move
+         snakePosition := commons.Point{X: rand.Intn(commons.Width), Y:rand.Intn(commons.Height)}
+         fruitPosition := commons.Point{X: rand.Intn(commons.Width), Y:rand.Intn(commons.Height)}
+
+         mapPointer.SnakePosition = snakePosition
+         mapPointer.FruitPosition = fruitPosition
+
+
+         //Convert to request
+         snakePositionRequest := &pb.Point{X: int32(mapPointer.SnakePosition.X), Y: int32(mapPointer.SnakePosition.Y)}
+         fruitPositionRequest := &pb.Point{X: int32(mapPointer.FruitPosition.X), Y: int32(mapPointer.FruitPosition.Y)}
+
+
+         aMapRequest := pb.Map{
+            SnakePosition:snakePositionRequest,
+            FruitPosition:fruitPositionRequest,
+            SnakeDirection:int32(mapPointer.SnakeDirection),
+            Height: commons.Height,
+            Width: commons.Width}
+         newGameState := &pb.GameStateRequest{GameState: &aMapRequest}
+         if err := stream.Send(newGameState); err != nil {
+            return err
+         }
+         time.Sleep(1000 * time.Millisecond)
+      }
+   }(aMap)
    for {
       fmt.Println("start receiving")
       in, err := stream.Recv()
@@ -32,12 +72,6 @@ func (s *server) SetDirectionsAndUpdateGame(stream pb.GameCommunicator_SetDirect
       }
       fmt.Printf("Received... snake: %d , direction: %d", in.GetSnakeNumber(), in.GetSnakeDirection())
 
-
-      fmt.Printf("Sending game state")
-      newGameState := &pb.GameStateRequest{GameState: 1}
-      if err := stream.Send(newGameState); err != nil {
-         return err
-      }
    }
 }
 func (s *server) SetDirection(ctx context.Context, in *pb.DirectionRequest) (*pb.DirectionResponse, error) {
