@@ -6,21 +6,21 @@ import (
 )
 
 func DrawMap(aMap commons.Map){
-	topBottomLine := strings.Repeat("#", aMap.Width + 2)
+	topBottomLine := strings.Repeat("#", (aMap.Width + 2)*3)
 	fmt.Println(topBottomLine)
 	for y := 0; y < aMap.Height ; y ++ {
-		fmt.Printf("#")
+		fmt.Printf("###")
 		for x := 0; x < aMap.Width ; x ++ {
 			if y == aMap.SnakePosition.Y && x == aMap.SnakePosition.X{
-				fmt.Printf("S")
+				fmt.Printf("SSS")
 			}else if y == aMap.FruitPosition.Y && x == aMap.FruitPosition.X{
-				fmt.Printf("F")
+				fmt.Printf("FFF")
 			}else{
-				fmt.Printf(" ")
+				fmt.Printf("   ")
 			}
 		}
 
-		fmt.Println("#")
+		fmt.Println("###")
 	}
 	fmt.Println(topBottomLine)
 }

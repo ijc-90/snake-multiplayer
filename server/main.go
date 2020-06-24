@@ -1,16 +1,15 @@
 package main
 
 import (
-   "fmt"
    "context"
-   "math/rand"
+   "fmt"
+   commons "github.com/ijc-90/snake-multiplayer/commons"
+   pb "github.com/ijc-90/snake-multiplayer/gamecommunicator"
+   "google.golang.org/grpc"
    "io"
    "log"
-   "time"
    "net"
-   "google.golang.org/grpc"
-   pb "github.com/ijc-90/snake-multiplayer/gamecommunicator"
-   commons "github.com/ijc-90/snake-multiplayer/commons"
+   "time"
 )
 
 
@@ -31,12 +30,31 @@ func (s *server) SetDirectionsAndUpdateGame(stream pb.GameCommunicator_SetDirect
       Height: commons.Height,
       FruitPosition: commons.Point{X:0, Y:1},
    }
+
+   // report game state every X seconds
    go func(mapPointer *commons.Map) error{
       for{
          fmt.Println("Sending game state")
          // Random move
-         snakePosition := commons.Point{X: rand.Intn(commons.Width), Y:rand.Intn(commons.Height)}
-         fruitPosition := commons.Point{X: rand.Intn(commons.Width), Y:rand.Intn(commons.Height)}
+
+         x := aMap.SnakePosition.X
+         y := aMap.SnakePosition.Y
+         switch aMap.SnakeDirection {
+         case 1: //UP
+            y = commons.Max(0, y - 1)
+
+         case 2: //LEFT
+            x = commons.Max(0, x - 1)
+         case 3: //DOWN
+            y = commons.Min(aMap.Height -1, y + 1)
+         case 4: //RIGHT
+            x = commons.Min(aMap.Width -1, x + 1)
+         }
+
+         snakePosition := commons.Point{X: x, Y: y}
+
+         //fruitPosition := commons.Point{X: rand.Intn(commons.Width), Y:rand.Intn(commons.Height)}
+         fruitPosition := commons.Point{X: aMap.FruitPosition.X, Y: aMap.FruitPosition.Y}
 
          mapPointer.SnakePosition = snakePosition
          mapPointer.FruitPosition = fruitPosition
@@ -57,13 +75,15 @@ func (s *server) SetDirectionsAndUpdateGame(stream pb.GameCommunicator_SetDirect
          if err := stream.Send(newGameState); err != nil {
             return err
          }
-         time.Sleep(1000 * time.Millisecond)
+         time.Sleep(500 * time.Millisecond)
       }
    }(aMap)
+
    for {
       fmt.Println("start receiving")
       in, err := stream.Recv()
       fmt.Println("in: ", in.GetSnakeDirection(), in.GetSnakeNumber())
+      aMap.SnakeDirection = int(in.GetSnakeDirection())
       if err == io.EOF {
          return nil
       }

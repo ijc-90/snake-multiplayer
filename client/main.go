@@ -1,13 +1,16 @@
 package main
 
 import (
+	"bufio"
 	"context"
-	"log"
+	commons "github.com/ijc-90/snake-multiplayer/commons"
+	pb "github.com/ijc-90/snake-multiplayer/gamecommunicator"
 	"io"
+	"log"
+	"os"
+
 	//"time"
 	"google.golang.org/grpc"
-	pb "github.com/ijc-90/snake-multiplayer/gamecommunicator"
-	commons "github.com/ijc-90/snake-multiplayer/commons"
 )
 
 const (
@@ -17,15 +20,7 @@ const (
 func main() {
 	var aMap commons.Map
 	var snakePosition, fruitPosition commons.Point
-	/*snakePosition = commons.Point{X:12,Y:4}
-	fruitPosition = commons.Point{X:3,Y:3}
-	aMap = commons.Map{
-		SnakePosition: snakePosition,
-		FruitPosition: fruitPosition,
-		Width: commons.Width,
-		Height: commons.Height}
 
-	DrawMap(aMap)*/
 	// Set up a connection to the server.
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
@@ -34,21 +29,11 @@ func main() {
 	defer conn.Close()
 	c := pb.NewGameCommunicatorClient(conn)
 
-	// Contact the server and print out its response.
-	/*
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
-	log.Printf("Send one Snake Direction on a direct call")
-	r, err := c.SetDirection(ctx, &pb.DirectionRequest{SnakeNumber: 1, SnakeDirection: 1})
-	if err != nil {
-		log.Fatalf("could not greet: %v", err)
-	}
-	log.Printf("Direction sent, Response code: %s", r.GetReceived())*/
 
 	stream, err := c.SetDirectionsAndUpdateGame(context.Background())
 	waitc := make(chan struct{})
 
+	// Constantly fetch and draw game state
 	go func() {
 		for {
 			in, err := stream.Recv()
@@ -78,15 +63,22 @@ func main() {
 				Height:        int(messageMap.Height),
 			}
 
-			//Draw map
 			DrawMap(aMap)
 		}
 	}()
 
+
+	reader := bufio.NewReader(os.Stdin)
 	for {
-		direction := &pb.DirectionRequest{SnakeNumber: 1, SnakeDirection:1}
-		if err := stream.Send(direction); err != nil {
-			log.Fatalf("Failed to send. error: %v", err)
+		char, _, err := reader.ReadRune()
+		if err == nil{
+			if value, found := commons.Directions[char]; found {
+				log.Println("match! %v %v", char, value )
+				direction := &pb.DirectionRequest{SnakeNumber: 1, SnakeDirection: int32(value)}
+				if err := stream.Send(direction); err != nil {
+					log.Fatalf("Failed to send. error: %v", err)
+				}
+			}
 		}
 
 	}
