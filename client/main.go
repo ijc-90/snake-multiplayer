@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"context"
+	"fmt"
 	commons "github.com/ijc-90/snake-multiplayer/commons"
 	pb "github.com/ijc-90/snake-multiplayer/gamecommunicator"
 	"io"
@@ -19,7 +20,7 @@ const (
 
 func main() {
 	var aMap commons.Map
-	var snakePosition, fruitPosition commons.Point
+	var fruitPosition commons.Point
 
 	// Set up a connection to the server.
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
@@ -48,16 +49,27 @@ func main() {
 
 			//Convert message to game drawable game state
 			messageMap := in.GameState
-			snakePosition = commons.Point{
-				X: int(messageMap.SnakePosition.X),
-				Y: int(messageMap.SnakePosition.Y),
-			}
 			fruitPosition = commons.Point{
 				X: int(messageMap.FruitPosition.X),
 				Y: int(messageMap.FruitPosition.Y),
 			}
+
+			println("Received new game state")
+			fmt.Printf(	"snake numberId %v position %v,%v direction %v",messageMap.SnakeOne.Id,messageMap.SnakeOne.Position.X,messageMap.SnakeOne.Position.Y, messageMap.SnakeOne.Direction)
+			fmt.Printf(	"snake numberId %v position %v,%v direction %v",messageMap.SnakeTwo.Id,messageMap.SnakeTwo.Position.X,messageMap.SnakeTwo.Position.Y, messageMap.SnakeTwo.Direction)
 			aMap = commons.Map{
-				SnakePosition: snakePosition,
+				Snakes: [2]commons.Snake{
+					commons.Snake{
+						Id: int(messageMap.SnakeOne.Id),
+						Position: commons.Point{ X: int(messageMap.SnakeOne.Position.X), Y: int(messageMap.SnakeOne.Position.Y) },
+						Direction: int(messageMap.SnakeOne.Direction),
+					},
+					commons.Snake{
+						Id: int(messageMap.SnakeTwo.Id),
+						Position: commons.Point{ X: int(messageMap.SnakeTwo.Position.X), Y: int(messageMap.SnakeTwo.Position.Y) },
+						Direction: int(messageMap.SnakeTwo.Direction),
+					},
+				},
 				FruitPosition: fruitPosition,
 				Width:         int(messageMap.Width),
 				Height:        int(messageMap.Height),

@@ -2,8 +2,8 @@ package commons
 
 
 type Map struct {
-	SnakePosition Point
-	SnakeDirection int
+	Snakes [2]Snake
+	GameId int
 	Width int
 	Height int
 	FruitPosition Point
@@ -12,4 +12,10 @@ type Map struct {
 type Point struct {
 	X int
 	Y int
+}
+
+type Snake struct{
+	Id int
+	Position Point
+	Direction int
 }

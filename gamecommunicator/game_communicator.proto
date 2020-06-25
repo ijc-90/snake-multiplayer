@@ -29,14 +29,21 @@ service GameCommunicator {
     }
 
     message Map{
-        Point snakePosition = 1;
-        Point fruitPosition = 2;
-        int32 snakeDirection = 3;
-        int32 height = 4;
-        int32 width = 5;
+        Snake snakeOne = 1;
+        Snake snakeTwo = 2;
+        Point fruitPosition = 3;
+        int32 GameId = 4;
+        int32 height = 5;
+        int32 width = 6;
     }
 
     message Point{
         int32 x = 1;
         int32 y = 2;
+    }
+
+    message Snake{
+            int32 id = 1;
+            Point position = 2;
+            int32 direction = 3;
     }
