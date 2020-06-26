@@ -141,12 +141,11 @@ func (s *server) SetDirectionsAndUpdateGame(stream pb.GameCommunicator_SetDirect
             tick(&gameBoardPointer.gameMap)
 
 
-            //Convert to request
             err2 := notifyGameState(gameBoardPointer)
             if err2 != nil {
                return err2
             }
-            time.Sleep(500 * time.Millisecond)
+            time.Sleep(commons.TickInterval * time.Millisecond)
          }
       }(gameBoardPointer)
    }

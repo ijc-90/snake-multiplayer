@@ -9,3 +9,5 @@ var Directions = map[rune]int{
 	's' : 3, // DOWN
 	'd' : 4, // RIGHT
 }
+
+const TickInterval = 500
