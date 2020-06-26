@@ -22,6 +22,7 @@ var games map[int]*gameBoard
 var waitingForOpponent bool
 var currentGameNumber int
 
+
 const (
    port = ":50051"
 )
