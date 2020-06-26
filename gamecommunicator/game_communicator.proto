@@ -1,38 +1,38 @@
 syntax = "proto3";
 
 service GameCommunicator {
-    // Sets a snake direction.
-    rpc SetDirection(DirectionRequest) returns (DirectionResponse) {}
-
-    rpc notifyGameState(GameStateRequest) returns (GameStateResponse) {}
+    // Connects to a game or creates a new one
+    rpc connectToGame(GameRequest) returns (GameResponse){}
 
     rpc setDirectionsAndUpdateGame(stream DirectionRequest) returns (stream GameStateRequest) {}
-
 }
 
 
     message DirectionRequest {
         int32 snakeNumber = 1;
         int32 snakeDirection = 2;
+        int32 gameId = 3;
     }
 
     message DirectionResponse {
         int32 received = 1;
     }
 
+    message GameRequest{}
+
+    message GameResponse {
+        int32 gameId = 1;
+        int32 playerId = 2;
+    }
     message GameStateRequest {
         Map gameState = 1;
-    }
-
-    message GameStateResponse {
-        int32 received = 1;
     }
 
     message Map{
         Snake snakeOne = 1;
         Snake snakeTwo = 2;
         Point fruitPosition = 3;
-        int32 GameId = 4;
+        int32 gameId = 4;
         int32 height = 5;
         int32 width = 6;
     }

@@ -9,8 +9,7 @@ import (
 	"io"
 	"log"
 	"os"
-
-	//"time"
+	"time"
 	"google.golang.org/grpc"
 )
 
@@ -21,6 +20,7 @@ const (
 func main() {
 	var aMap commons.Map
 	var fruitPosition commons.Point
+	var snakeNumber, gameId int32
 
 	// Set up a connection to the server.
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
@@ -30,9 +30,29 @@ func main() {
 	defer conn.Close()
 	c := pb.NewGameCommunicatorClient(conn)
 
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*200)
+	defer cancel()
+
+	gameResponse, err := c.ConnectToGame(ctx, &pb.GameRequest{})
+	if err != nil {
+		log.Fatalf("Failed to connect to game : %v", err)
+	}
+
+
+	snakeNumber = gameResponse.PlayerId
+	gameId = gameResponse.GameId
+	fmt.Printf("game id %v \n", gameId)
+
 
 	stream, err := c.SetDirectionsAndUpdateGame(context.Background())
 	waitc := make(chan struct{})
+
+	//Send first request when ready
+	direction := &pb.DirectionRequest{SnakeNumber: snakeNumber, SnakeDirection: int32(1),GameId: gameId}
+	if err := stream.Send(direction); err != nil {
+		log.Fatalf("Failed to send. error: %v", err)
+	}
+
 
 	// Constantly fetch and draw game state
 	go func() {
@@ -86,7 +106,7 @@ func main() {
 		if err == nil{
 			if value, found := commons.Directions[char]; found {
 				log.Println("match! %v %v", char, value )
-				direction := &pb.DirectionRequest{SnakeNumber: 1, SnakeDirection: int32(value)}
+				direction := &pb.DirectionRequest{SnakeNumber: snakeNumber, SnakeDirection: int32(value)}
 				if err := stream.Send(direction); err != nil {
 					log.Fatalf("Failed to send. error: %v", err)
 				}

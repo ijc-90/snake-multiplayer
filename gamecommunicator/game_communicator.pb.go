@@ -27,6 +27,7 @@ const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 type DirectionRequest struct {
 	SnakeNumber          int32    `protobuf:"varint,1,opt,name=snakeNumber,proto3" json:"snakeNumber,omitempty"`
 	SnakeDirection       int32    `protobuf:"varint,2,opt,name=snakeDirection,proto3" json:"snakeDirection,omitempty"`
+	GameId               int32    `protobuf:"varint,3,opt,name=gameId,proto3" json:"gameId,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -71,6 +72,13 @@ func (m *DirectionRequest) GetSnakeDirection() int32 {
 	return 0
 }
 
+func (m *DirectionRequest) GetGameId() int32 {
+	if m != nil {
+		return m.GameId
+	}
+	return 0
+}
+
 type DirectionResponse struct {
 	Received             int32    `protobuf:"varint,1,opt,name=received,proto3" json:"received,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -110,6 +118,84 @@ func (m *DirectionResponse) GetReceived() int32 {
 	return 0
 }
 
+type GameRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GameRequest) Reset()         { *m = GameRequest{} }
+func (m *GameRequest) String() string { return proto.CompactTextString(m) }
+func (*GameRequest) ProtoMessage()    {}
+func (*GameRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0f613927d158904c, []int{2}
+}
+
+func (m *GameRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GameRequest.Unmarshal(m, b)
+}
+func (m *GameRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GameRequest.Marshal(b, m, deterministic)
+}
+func (m *GameRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GameRequest.Merge(m, src)
+}
+func (m *GameRequest) XXX_Size() int {
+	return xxx_messageInfo_GameRequest.Size(m)
+}
+func (m *GameRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GameRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GameRequest proto.InternalMessageInfo
+
+type GameResponse struct {
+	GameId               int32    `protobuf:"varint,1,opt,name=gameId,proto3" json:"gameId,omitempty"`
+	PlayerId             int32    `protobuf:"varint,2,opt,name=playerId,proto3" json:"playerId,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GameResponse) Reset()         { *m = GameResponse{} }
+func (m *GameResponse) String() string { return proto.CompactTextString(m) }
+func (*GameResponse) ProtoMessage()    {}
+func (*GameResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0f613927d158904c, []int{3}
+}
+
+func (m *GameResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GameResponse.Unmarshal(m, b)
+}
+func (m *GameResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GameResponse.Marshal(b, m, deterministic)
+}
+func (m *GameResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GameResponse.Merge(m, src)
+}
+func (m *GameResponse) XXX_Size() int {
+	return xxx_messageInfo_GameResponse.Size(m)
+}
+func (m *GameResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GameResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GameResponse proto.InternalMessageInfo
+
+func (m *GameResponse) GetGameId() int32 {
+	if m != nil {
+		return m.GameId
+	}
+	return 0
+}
+
+func (m *GameResponse) GetPlayerId() int32 {
+	if m != nil {
+		return m.PlayerId
+	}
+	return 0
+}
+
 type GameStateRequest struct {
 	GameState            *Map     `protobuf:"bytes,1,opt,name=gameState,proto3" json:"gameState,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -121,7 +207,7 @@ func (m *GameStateRequest) Reset()         { *m = GameStateRequest{} }
 func (m *GameStateRequest) String() string { return proto.CompactTextString(m) }
 func (*GameStateRequest) ProtoMessage()    {}
 func (*GameStateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0f613927d158904c, []int{2}
+	return fileDescriptor_0f613927d158904c, []int{4}
 }
 
 func (m *GameStateRequest) XXX_Unmarshal(b []byte) error {
@@ -149,50 +235,11 @@ func (m *GameStateRequest) GetGameState() *Map {
 	return nil
 }
 
-type GameStateResponse struct {
-	Received             int32    `protobuf:"varint,1,opt,name=received,proto3" json:"received,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GameStateResponse) Reset()         { *m = GameStateResponse{} }
-func (m *GameStateResponse) String() string { return proto.CompactTextString(m) }
-func (*GameStateResponse) ProtoMessage()    {}
-func (*GameStateResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0f613927d158904c, []int{3}
-}
-
-func (m *GameStateResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GameStateResponse.Unmarshal(m, b)
-}
-func (m *GameStateResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GameStateResponse.Marshal(b, m, deterministic)
-}
-func (m *GameStateResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GameStateResponse.Merge(m, src)
-}
-func (m *GameStateResponse) XXX_Size() int {
-	return xxx_messageInfo_GameStateResponse.Size(m)
-}
-func (m *GameStateResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_GameStateResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GameStateResponse proto.InternalMessageInfo
-
-func (m *GameStateResponse) GetReceived() int32 {
-	if m != nil {
-		return m.Received
-	}
-	return 0
-}
-
 type Map struct {
 	SnakeOne             *Snake   `protobuf:"bytes,1,opt,name=snakeOne,proto3" json:"snakeOne,omitempty"`
 	SnakeTwo             *Snake   `protobuf:"bytes,2,opt,name=snakeTwo,proto3" json:"snakeTwo,omitempty"`
 	FruitPosition        *Point   `protobuf:"bytes,3,opt,name=fruitPosition,proto3" json:"fruitPosition,omitempty"`
-	GameId               int32    `protobuf:"varint,4,opt,name=GameId,proto3" json:"GameId,omitempty"`
+	GameId               int32    `protobuf:"varint,4,opt,name=gameId,proto3" json:"gameId,omitempty"`
 	Height               int32    `protobuf:"varint,5,opt,name=height,proto3" json:"height,omitempty"`
 	Width                int32    `protobuf:"varint,6,opt,name=width,proto3" json:"width,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -204,7 +251,7 @@ func (m *Map) Reset()         { *m = Map{} }
 func (m *Map) String() string { return proto.CompactTextString(m) }
 func (*Map) ProtoMessage()    {}
 func (*Map) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0f613927d158904c, []int{4}
+	return fileDescriptor_0f613927d158904c, []int{5}
 }
 
 func (m *Map) XXX_Unmarshal(b []byte) error {
@@ -279,7 +326,7 @@ func (m *Point) Reset()         { *m = Point{} }
 func (m *Point) String() string { return proto.CompactTextString(m) }
 func (*Point) ProtoMessage()    {}
 func (*Point) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0f613927d158904c, []int{5}
+	return fileDescriptor_0f613927d158904c, []int{6}
 }
 
 func (m *Point) XXX_Unmarshal(b []byte) error {
@@ -327,7 +374,7 @@ func (m *Snake) Reset()         { *m = Snake{} }
 func (m *Snake) String() string { return proto.CompactTextString(m) }
 func (*Snake) ProtoMessage()    {}
 func (*Snake) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0f613927d158904c, []int{6}
+	return fileDescriptor_0f613927d158904c, []int{7}
 }
 
 func (m *Snake) XXX_Unmarshal(b []byte) error {
@@ -372,8 +419,9 @@ func (m *Snake) GetDirection() int32 {
 func init() {
 	proto.RegisterType((*DirectionRequest)(nil), "DirectionRequest")
 	proto.RegisterType((*DirectionResponse)(nil), "DirectionResponse")
+	proto.RegisterType((*GameRequest)(nil), "GameRequest")
+	proto.RegisterType((*GameResponse)(nil), "GameResponse")
 	proto.RegisterType((*GameStateRequest)(nil), "GameStateRequest")
-	proto.RegisterType((*GameStateResponse)(nil), "GameStateResponse")
 	proto.RegisterType((*Map)(nil), "Map")
 	proto.RegisterType((*Point)(nil), "Point")
 	proto.RegisterType((*Snake)(nil), "Snake")
@@ -384,33 +432,34 @@ func init() {
 }
 
 var fileDescriptor_0f613927d158904c = []byte{
-	// 414 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x93, 0x41, 0x8b, 0xd3, 0x40,
-	0x14, 0xc7, 0x3b, 0xe9, 0x26, 0xec, 0xbe, 0x5d, 0xd7, 0xed, 0x43, 0x34, 0x04, 0x0f, 0xcb, 0x08,
-	0xd2, 0x83, 0x44, 0xa9, 0xa0, 0xe0, 0x4d, 0x14, 0xd4, 0x43, 0xb5, 0xa4, 0xf5, 0x20, 0x08, 0x32,
-	0x4d, 0xa6, 0xed, 0x20, 0x99, 0x89, 0xc9, 0xc4, 0xb6, 0x1f, 0xcf, 0x8f, 0xe0, 0x37, 0x92, 0x4c,
-	0x92, 0x69, 0x9a, 0x7a, 0xd8, 0xe3, 0xff, 0x97, 0xf7, 0xde, 0xfc, 0x67, 0xfe, 0x2f, 0xf0, 0x68,
-	0xcd, 0x52, 0xfe, 0x23, 0x56, 0x69, 0x5a, 0x4a, 0x11, 0x33, 0xad, 0xf2, 0x30, 0xcb, 0x95, 0x56,
-	0xf4, 0x3b, 0xdc, 0xbc, 0x17, 0x39, 0x8f, 0xb5, 0x50, 0x32, 0xe2, 0xbf, 0x4a, 0x5e, 0x68, 0xbc,
-	0x85, 0xcb, 0x42, 0xb2, 0x9f, 0xfc, 0x73, 0x99, 0x2e, 0x79, 0xee, 0x93, 0x5b, 0x32, 0x76, 0xa3,
-	0x2e, 0xc2, 0xa7, 0x70, 0x6d, 0xa4, 0x6d, 0xf5, 0x1d, 0x53, 0xd4, 0xa3, 0xf4, 0x39, 0x8c, 0x3a,
-	0xd3, 0x8b, 0x4c, 0xc9, 0x82, 0x63, 0x00, 0xe7, 0x39, 0x8f, 0xb9, 0xf8, 0xcd, 0x93, 0x66, 0xb6,
-	0xd5, 0xf4, 0x15, 0xdc, 0x7c, 0x60, 0x29, 0x9f, 0x6b, 0xa6, 0x79, 0x6b, 0x87, 0xc2, 0xc5, 0xba,
-	0x65, 0xa6, 0xe1, 0x72, 0x72, 0x16, 0x4e, 0x59, 0x16, 0x1d, 0x70, 0x75, 0x50, 0xa7, 0xef, 0x0e,
-	0x07, 0xfd, 0x21, 0x30, 0x9c, 0xb2, 0x0c, 0x29, 0x9c, 0x1b, 0xcf, 0x5f, 0x64, 0x3b, 0xdb, 0x0b,
-	0xe7, 0x15, 0x88, 0x2c, 0xb7, 0x35, 0x8b, 0xad, 0x32, 0xf7, 0xec, 0xd7, 0x2c, 0xb6, 0x0a, 0x9f,
-	0xc1, 0xbd, 0x55, 0x5e, 0x0a, 0x3d, 0x53, 0x85, 0x30, 0x0f, 0x32, 0x6c, 0x0a, 0x67, 0x4a, 0x48,
-	0x1d, 0x1d, 0x7f, 0xc4, 0x87, 0xe0, 0x55, 0x76, 0x3f, 0x25, 0xfe, 0x99, 0xf1, 0xd5, 0xa8, 0x8a,
-	0x6f, 0xb8, 0x58, 0x6f, 0xb4, 0xef, 0xd6, 0xbc, 0x56, 0xf8, 0x00, 0xdc, 0xad, 0x48, 0xf4, 0xc6,
-	0xf7, 0x0c, 0xae, 0x05, 0x7d, 0x02, 0xae, 0x99, 0x8e, 0x57, 0x40, 0x76, 0xcd, 0x0d, 0xc9, 0xae,
-	0x52, 0xfb, 0x26, 0x0f, 0xb2, 0xa7, 0xdf, 0xc0, 0x35, 0x5e, 0xf1, 0x1a, 0x1c, 0xd1, 0xbe, 0x83,
-	0x23, 0x92, 0xea, 0x56, 0x59, 0x6b, 0xd6, 0x39, 0x32, 0x6b, 0x39, 0x3e, 0x86, 0x8b, 0xc4, 0x46,
-	0x3c, 0x34, 0xad, 0x07, 0x30, 0xf9, 0x4b, 0xea, 0xb4, 0xde, 0x75, 0xd6, 0x0a, 0x5f, 0xc3, 0xd5,
-	0x9c, 0x6b, 0x9b, 0x3a, 0x8e, 0xc2, 0xfe, 0x7e, 0x05, 0x18, 0x9e, 0x2c, 0x05, 0x1d, 0xe0, 0x1b,
-	0xb8, 0x2f, 0x95, 0x16, 0xab, 0xbd, 0x0d, 0x12, 0x47, 0x61, 0x7f, 0x19, 0x02, 0x0c, 0x4f, 0x72,
-	0xa6, 0x03, 0xfc, 0x08, 0x41, 0xd1, 0x39, 0xb4, 0x78, 0x2b, 0x93, 0xaf, 0x59, 0xc2, 0x34, 0xaf,
-	0x8a, 0xff, 0x67, 0xe1, 0x74, 0x32, 0x1d, 0x8c, 0xc9, 0x0b, 0xb2, 0xf4, 0xcc, 0x6f, 0xf1, 0xf2,
-	0x5f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x96, 0xca, 0x9e, 0x62, 0x31, 0x03, 0x00, 0x00,
+	// 426 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x5c, 0x53, 0xdf, 0x6f, 0xd3, 0x30,
+	0x10, 0x9e, 0xdb, 0x25, 0xda, 0xae, 0xed, 0xb4, 0x5a, 0x68, 0x44, 0x15, 0x0f, 0x93, 0x91, 0xd0,
+	0x1e, 0x90, 0x41, 0x43, 0xe2, 0x9d, 0x1f, 0x12, 0xec, 0x61, 0x30, 0x65, 0xe5, 0x81, 0x27, 0xe4,
+	0xc5, 0x47, 0x6b, 0x41, 0xec, 0x90, 0x38, 0xb4, 0xfd, 0x1f, 0xf8, 0xa7, 0xf8, 0xcf, 0xa6, 0x38,
+	0x8e, 0x9b, 0xe6, 0xf1, 0xfb, 0x7c, 0x77, 0xdf, 0xdd, 0x77, 0x67, 0x78, 0xba, 0x12, 0x39, 0xfe,
+	0xc8, 0x4c, 0x9e, 0xd7, 0x5a, 0x65, 0xc2, 0x9a, 0x92, 0x17, 0xa5, 0xb1, 0x86, 0x59, 0x38, 0xff,
+	0xa8, 0x4a, 0xcc, 0xac, 0x32, 0x3a, 0xc5, 0x3f, 0x35, 0x56, 0x96, 0x5e, 0xc2, 0xa4, 0xd2, 0xe2,
+	0x17, 0x7e, 0xa9, 0xf3, 0x07, 0x2c, 0x13, 0x72, 0x49, 0xae, 0xa2, 0xb4, 0x4f, 0xd1, 0x17, 0x70,
+	0xe6, 0x60, 0x48, 0x4d, 0x46, 0x2e, 0x68, 0xc0, 0xd2, 0x0b, 0x88, 0x1b, 0xe1, 0x1b, 0x99, 0x8c,
+	0xdd, 0xbb, 0x47, 0xec, 0x15, 0xcc, 0x7b, 0xaa, 0x55, 0x61, 0x74, 0x85, 0x74, 0x01, 0x27, 0x25,
+	0x66, 0xa8, 0xfe, 0xa2, 0xf4, 0x9a, 0x01, 0xb3, 0x19, 0x4c, 0x3e, 0x89, 0x1c, 0x7d, 0x87, 0xec,
+	0x3d, 0x4c, 0x5b, 0xe8, 0x53, 0xf7, 0x3a, 0xa4, 0xaf, 0xd3, 0x94, 0x2c, 0x7e, 0x8b, 0x1d, 0x96,
+	0x37, 0xd2, 0x77, 0x18, 0x30, 0x7b, 0x0b, 0xe7, 0x4d, 0x8d, 0x7b, 0x2b, 0x6c, 0x57, 0x97, 0x32,
+	0x38, 0x5d, 0x75, 0x9c, 0x2b, 0x35, 0xb9, 0x3e, 0xe6, 0xb7, 0xa2, 0x48, 0xf7, 0x34, 0xfb, 0x4f,
+	0x60, 0x7c, 0x2b, 0x0a, 0xca, 0xe0, 0xc4, 0x4d, 0xfb, 0x55, 0x77, 0xa1, 0x31, 0xbf, 0x6f, 0x88,
+	0x34, 0xf0, 0x21, 0x66, 0xb9, 0x31, 0x4e, 0x7f, 0x18, 0xb3, 0xdc, 0x18, 0xfa, 0x12, 0x66, 0x3f,
+	0xcb, 0x5a, 0xd9, 0x3b, 0x53, 0x29, 0x67, 0xe5, 0xd8, 0x07, 0xde, 0x19, 0xa5, 0x6d, 0x7a, 0xf8,
+	0xd8, 0x9b, 0xf4, 0xf8, 0x60, 0xd2, 0x0b, 0x88, 0xd7, 0xa8, 0x56, 0x6b, 0x9b, 0x44, 0x2d, 0xdf,
+	0x22, 0xfa, 0x04, 0xa2, 0x8d, 0x92, 0x76, 0x9d, 0xc4, 0x8e, 0x6e, 0x01, 0x7b, 0x0e, 0x91, 0xab,
+	0x4e, 0xa7, 0x40, 0xb6, 0xde, 0x33, 0xb2, 0x6d, 0xd0, 0xce, 0xfb, 0x44, 0x76, 0xec, 0x3b, 0x44,
+	0xae, 0x57, 0x7a, 0x06, 0x23, 0xd5, 0x39, 0x3b, 0x52, 0xb2, 0x99, 0xaa, 0xe8, 0x9a, 0x1d, 0x1d,
+	0x34, 0x1b, 0x78, 0xfa, 0x0c, 0x4e, 0x65, 0x38, 0x8e, 0x76, 0xf9, 0x7b, 0xe2, 0xfa, 0x1f, 0x69,
+	0xcd, 0xff, 0xd0, 0x3b, 0x48, 0xca, 0x61, 0x96, 0x19, 0xad, 0x31, 0xb3, 0x4b, 0xd3, 0x3c, 0xd2,
+	0x29, 0xef, 0xed, 0x7c, 0x31, 0xe3, 0xfd, 0x95, 0xb3, 0x23, 0xfa, 0x19, 0x16, 0x15, 0xda, 0x70,
+	0x47, 0xd5, 0x3b, 0x2d, 0xbf, 0x15, 0x52, 0x58, 0x74, 0xc9, 0x73, 0x3e, 0xbc, 0xeb, 0xc5, 0x9c,
+	0x0f, 0x17, 0xce, 0x8e, 0xae, 0xc8, 0x6b, 0xf2, 0x10, 0xbb, 0xbf, 0xf0, 0xe6, 0x31, 0x00, 0x00,
+	0xff, 0xff, 0x56, 0x5a, 0x3f, 0xcd, 0x26, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -425,9 +474,8 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type GameCommunicatorClient interface {
-	// Sets a snake direction.
-	SetDirection(ctx context.Context, in *DirectionRequest, opts ...grpc.CallOption) (*DirectionResponse, error)
-	NotifyGameState(ctx context.Context, in *GameStateRequest, opts ...grpc.CallOption) (*GameStateResponse, error)
+	// Connects to a game or creates a new one
+	ConnectToGame(ctx context.Context, in *GameRequest, opts ...grpc.CallOption) (*GameResponse, error)
 	SetDirectionsAndUpdateGame(ctx context.Context, opts ...grpc.CallOption) (GameCommunicator_SetDirectionsAndUpdateGameClient, error)
 }
 
@@ -439,18 +487,9 @@ func NewGameCommunicatorClient(cc grpc.ClientConnInterface) GameCommunicatorClie
 	return &gameCommunicatorClient{cc}
 }
 
-func (c *gameCommunicatorClient) SetDirection(ctx context.Context, in *DirectionRequest, opts ...grpc.CallOption) (*DirectionResponse, error) {
-	out := new(DirectionResponse)
-	err := c.cc.Invoke(ctx, "/GameCommunicator/SetDirection", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *gameCommunicatorClient) NotifyGameState(ctx context.Context, in *GameStateRequest, opts ...grpc.CallOption) (*GameStateResponse, error) {
-	out := new(GameStateResponse)
-	err := c.cc.Invoke(ctx, "/GameCommunicator/notifyGameState", in, out, opts...)
+func (c *gameCommunicatorClient) ConnectToGame(ctx context.Context, in *GameRequest, opts ...grpc.CallOption) (*GameResponse, error) {
+	out := new(GameResponse)
+	err := c.cc.Invoke(ctx, "/GameCommunicator/connectToGame", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -490,9 +529,8 @@ func (x *gameCommunicatorSetDirectionsAndUpdateGameClient) Recv() (*GameStateReq
 
 // GameCommunicatorServer is the server API for GameCommunicator service.
 type GameCommunicatorServer interface {
-	// Sets a snake direction.
-	SetDirection(context.Context, *DirectionRequest) (*DirectionResponse, error)
-	NotifyGameState(context.Context, *GameStateRequest) (*GameStateResponse, error)
+	// Connects to a game or creates a new one
+	ConnectToGame(context.Context, *GameRequest) (*GameResponse, error)
 	SetDirectionsAndUpdateGame(GameCommunicator_SetDirectionsAndUpdateGameServer) error
 }
 
@@ -500,11 +538,8 @@ type GameCommunicatorServer interface {
 type UnimplementedGameCommunicatorServer struct {
 }
 
-func (*UnimplementedGameCommunicatorServer) SetDirection(ctx context.Context, req *DirectionRequest) (*DirectionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetDirection not implemented")
-}
-func (*UnimplementedGameCommunicatorServer) NotifyGameState(ctx context.Context, req *GameStateRequest) (*GameStateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method NotifyGameState not implemented")
+func (*UnimplementedGameCommunicatorServer) ConnectToGame(ctx context.Context, req *GameRequest) (*GameResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConnectToGame not implemented")
 }
 func (*UnimplementedGameCommunicatorServer) SetDirectionsAndUpdateGame(srv GameCommunicator_SetDirectionsAndUpdateGameServer) error {
 	return status.Errorf(codes.Unimplemented, "method SetDirectionsAndUpdateGame not implemented")
@@ -514,38 +549,20 @@ func RegisterGameCommunicatorServer(s *grpc.Server, srv GameCommunicatorServer) 
 	s.RegisterService(&_GameCommunicator_serviceDesc, srv)
 }
 
-func _GameCommunicator_SetDirection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DirectionRequest)
+func _GameCommunicator_ConnectToGame_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GameRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GameCommunicatorServer).SetDirection(ctx, in)
+		return srv.(GameCommunicatorServer).ConnectToGame(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/GameCommunicator/SetDirection",
+		FullMethod: "/GameCommunicator/ConnectToGame",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GameCommunicatorServer).SetDirection(ctx, req.(*DirectionRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _GameCommunicator_NotifyGameState_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GameStateRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GameCommunicatorServer).NotifyGameState(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/GameCommunicator/NotifyGameState",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GameCommunicatorServer).NotifyGameState(ctx, req.(*GameStateRequest))
+		return srv.(GameCommunicatorServer).ConnectToGame(ctx, req.(*GameRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -581,12 +598,8 @@ var _GameCommunicator_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*GameCommunicatorServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SetDirection",
-			Handler:    _GameCommunicator_SetDirection_Handler,
-		},
-		{
-			MethodName: "notifyGameState",
-			Handler:    _GameCommunicator_NotifyGameState_Handler,
+			MethodName: "connectToGame",
+			Handler:    _GameCommunicator_ConnectToGame_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
