@@ -6,7 +6,17 @@ import (
 	"strings"
 )
 
-func DrawMap(aMap commons.Map){
+func DrawMap(aMap commons.Map, playerId int){
+	if aMap.GameOver{
+		if aMap.Snakes[playerId-1].Won{
+			println("###### Congratz! you won! ######")
+		}else if aMap.Snakes[playerId-1].Lost{
+			println("###### Shame on you, noob! you lost! ######")
+		}else{
+			println("###### Its a tie! ######")
+		}
+		return
+	}
 	fmt.Printf(	"%v,%v",aMap.Snakes[0].Position.X,aMap.Snakes[0].Position.Y)
 	fmt.Println()
 	fmt.Printf("%v,%v",aMap.Snakes[1].Position.X,aMap.Snakes[1].Position.Y)
