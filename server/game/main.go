@@ -217,34 +217,6 @@ func main() {
 	waitingForOpponent = false
 	games = make(map[int]*gameBoard)
 
-	/*//Creating harcoded game 1
-	newMap := commons.Map{
-		Snakes:[2]commons.Snake{
-			commons.Snake{
-				Id: 1,
-				Position: commons.Point{X: 0, Y: 0},
-				Direction: 3,
-			},
-			commons.Snake{
-				Id: 2,
-				Position: commons.Point{X: commons.Width-1, Y: commons.Height-1},
-				Direction: 3,
-			},
-
-		},
-		Width: commons.Width,
-		Height: commons.Height,
-		FruitPosition: commons.Point{X:0, Y:1},
-		GameId: 1,
-	}
-	newGameBoard := &gameBoard{
-		gameMap: newMap,
-	}
-	games[1] = newGameBoard
-
-	 */
-
-
 
 	fmt.Println("Starting game server")
 	lis, err := net.Listen("tcp", port)
