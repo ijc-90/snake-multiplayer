@@ -112,57 +112,7 @@ func internalCreateMatch(gameNumber int) error{
 	return nil
 }
 
-/*func (s *server) ConnectToGame(ctx context.Context, in *game_communicator.GameRequest) (*game_communicator.GameResponse, error) {
-	if waitingForOpponent{
-		currentGameBoard, found := games[currentGameNumber]
-		if !found{
-			log.Fatalf("Game Not Found")
-		}
-		waitingForOpponent = false
-		fmt.Printf("Agame id connected %d, pointer %v", currentGameNumber, currentGameBoard)
-		fmt.Println()
-		currentGameNumber ++
 
-		return &game_communicator.GameResponse{
-			GameId: int32(currentGameBoard.gameMap.GameId),
-			PlayerId: 2,
-		}, nil
-	}else{
-		newMap := commons.Map{
-			Snakes:[2]commons.Snake{
-				commons.Snake{
-					Id: 1,
-					Position: commons.Point{X: 0, Y: 0},
-					Direction: 3,
-				},
-				commons.Snake{
-					Id: 2,
-					Position: commons.Point{X: commons.Width-1, Y: commons.Height-1},
-					Direction: 3,
-				},
-
-			},
-			Width: commons.Width,
-			Height: commons.Height,
-			FruitPosition: commons.Point{X:0, Y:1},
-			GameId: currentGameNumber,
-		}
-		newGameBoard := &gameBoard{
-			gameMap: newMap,
-			//streams: make([]pb.GameCommunicator_SetDirectionsAndUpdateGameServer, 0, 2),
-		}
-		games[currentGameNumber] = newGameBoard
-		waitingForOpponent = true
-
-
-		return &game_communicator.GameResponse{
-			GameId: int32(newMap.GameId),
-			PlayerId: 1,
-		}, nil
-
-	}
-}
-*/
 func (s *server) SetDirectionsAndUpdateGame(stream game_communicator.GameCommunicator_SetDirectionsAndUpdateGameServer) error {
 	var gameBoardPointer *gameBoard
 

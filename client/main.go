@@ -89,9 +89,6 @@ func main() {
 				Y: int(messageMap.FruitPosition.Y),
 			}
 
-			//println("Received new game state")
-			//fmt.Printf(	"snake numberId %v position %v,%v direction %v",messageMap.SnakeOne.Id,messageMap.SnakeOne.Position.X,messageMap.SnakeOne.Position.Y, messageMap.SnakeOne.Direction)
-			//fmt.Printf(	"snake numberId %v position %v,%v direction %v",messageMap.SnakeTwo.Id,messageMap.SnakeTwo.Position.X,messageMap.SnakeTwo.Position.Y, messageMap.SnakeTwo.Direction)
 			aMap = commons.Map{
 				Snakes: [2]commons.Snake{
 					commons.Snake{
