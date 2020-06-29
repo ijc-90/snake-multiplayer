@@ -20,6 +20,8 @@ const (
 	matchMakingAddress = "localhost:50052"
 )
 
+var gameOver = false
+
 func main() {
 	var snakeNumber int32
 	var  gameId int32
@@ -68,7 +70,7 @@ func main() {
 
 	// Constantly fetch and draw game state
 	go func() {
-		for {
+		for ! gameOver {
 			in, err := stream.Recv()
 			if err == io.EOF {
 				// read done.
@@ -111,6 +113,7 @@ func main() {
 				Height:        int(messageMap.Height),
 				GameOver: messageMap.GameOver,
 			}
+			gameOver = aMap.GameOver
 
 			DrawMap(aMap, int(snakeNumber))
 		}
@@ -118,9 +121,9 @@ func main() {
 
 
 	reader := bufio.NewReader(os.Stdin)
-	for {
+	for !gameOver {
 		char, _, err := reader.ReadRune()
-		if err == nil{
+		if err == nil && !gameOver{
 			if value, found := commons.Directions[char]; found {
 				log.Println("match! %v %v", char, value )
 				direction := &game_communicator.DirectionRequest{SnakeNumber: snakeNumber, SnakeDirection: int32(value), GameId: gameId}

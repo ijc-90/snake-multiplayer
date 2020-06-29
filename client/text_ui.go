@@ -15,6 +15,7 @@ func DrawMap(aMap commons.Map, playerId int){
 		}else{
 			println("###### Its a tie! ######")
 		}
+		println("Game is over, press enter key to exit")
 		return
 	}
 	fmt.Printf(	"%v,%v",aMap.Snakes[0].Position.X,aMap.Snakes[0].Position.Y)

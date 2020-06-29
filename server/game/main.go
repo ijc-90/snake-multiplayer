@@ -34,6 +34,10 @@ type server struct {
 func tick( mapPointer *commons.Map){
 	var newSnakes [2]commons.Snake
 
+	var oldSnakePositions [2]commons.Point
+	oldSnakePositions[0] = commons.Point{X: mapPointer.Snakes[0].Position.X,Y: mapPointer.Snakes[0].Position.Y}
+	oldSnakePositions[1] = commons.Point{X: mapPointer.Snakes[1].Position.X,Y: mapPointer.Snakes[1].Position.Y}
+
 	for index, snake := range mapPointer.Snakes{
 		x := snake.Position.X
 		y := snake.Position.Y
@@ -57,7 +61,8 @@ func tick( mapPointer *commons.Map){
 	mapPointer.Snakes = newSnakes
 
 	//Detect collision
-	if mapPointer.Snakes[0].Position.IsEqual(mapPointer.Snakes[1].Position){
+	if mapPointer.Snakes[0].Position.IsEqual(mapPointer.Snakes[1].Position) ||
+	 (mapPointer.Snakes[0].Position.IsEqual(oldSnakePositions[1]) && mapPointer.Snakes[1].Position.IsEqual(oldSnakePositions[0]) ) {
 		mapPointer.Snakes[0].Won = false
 		mapPointer.Snakes[0].Lost = true
 		mapPointer.Snakes[1].Won = false
@@ -145,6 +150,10 @@ func (s *server) SetDirectionsAndUpdateGame(stream game_communicator.GameCommuni
 				err2 := notifyGameState(gameBoardPointer)
 				if err2 != nil {
 					return err2
+				}
+
+				if (gameBoardPointer.gameMap.GameOver){
+					return nil
 				}
 				time.Sleep(commons.TickInterval * time.Millisecond)
 			}
