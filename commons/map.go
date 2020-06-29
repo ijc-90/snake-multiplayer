@@ -9,6 +9,7 @@ type Map struct {
 	Height int
 	FruitPosition Point
 	GameOver bool
+	GameStarted bool
 }
 
 type Point struct {
@@ -23,6 +24,10 @@ func (p Point) Distance(otherPoint Point) int {
 	x := p.X - otherPoint.X
 	y := p.Y - otherPoint.Y
 	return int(math.Abs(float64(x)) + math.Abs(float64(y)))
+}
+
+func (p Point) Multiply(scalar int) Point {
+	return Point{X: p.X * scalar, Y: p.Y * scalar}
 }
 
 type Snake struct{

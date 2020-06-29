@@ -4,13 +4,16 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/ebitenutil"
 	commons "github.com/ijc-90/snake-multiplayer/commons"
 	"github.com/ijc-90/snake-multiplayer/communication/game_communicator"
 	"github.com/ijc-90/snake-multiplayer/communication/matchmaking_communicator"
-
 	"google.golang.org/grpc"
+	"image/color"
 	"io"
 	"log"
+	"math/rand"
 	"os"
 	"time"
 )
@@ -20,12 +23,67 @@ const (
 	matchMakingAddress = "localhost:50052"
 )
 
+var aMap commons.Map
+var gameStarted bool
+
+
+type Game struct{}
+func (g *Game) Update(screen *ebiten.Image) error {
+	return nil
+}
+func (g *Game) Draw(screen *ebiten.Image) {
+
+	//fmt.Printf("map representation %v\n", aMap)
+	if !gameStarted {
+		ebitenutil.DebugPrint(screen, "Loading or waiting for a match!")
+	}else {
+		screen.Fill(color.RGBA{0xff, 0xff, 0xff, 0xff})
+
+		firstPos := aMap.Snakes[0].Position.Multiply(57)
+		secondPos := aMap.Snakes[0].Position.Multiply(57)
+		fruitPos := aMap.FruitPosition.Multiply(57)
+
+		var op *ebiten.DrawImageOptions
+
+		op = &ebiten.DrawImageOptions{}
+		op.GeoM.Translate(float64(firstPos.X), float64(firstPos.Y))
+		screen.DrawImage(snakeOneImage, op)
+
+
+
+		op = &ebiten.DrawImageOptions{}
+		op.GeoM.Translate(float64(secondPos.X), float64(secondPos.Y))
+		screen.DrawImage(snakeTwoImage, op)
+		op = &ebiten.DrawImageOptions{}
+		op.GeoM.Translate(float64(fruitPos.X), float64(fruitPos.Y))
+		screen.DrawImage(fruitImage, op)
+	}
+}
+func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
+	return 320, 240
+}
+
+var snakeOneImage *ebiten.Image
+var snakeTwoImage *ebiten.Image
+var fruitImage *ebiten.Image
+
+func init() {
+	var err error
+	snakeImage, _, err = ebitenutil.NewImageFromFile("images/snake.png", ebiten.FilterDefault)
+	fruitImage, _, err = ebitenutil.NewImageFromFile("images/gopher2.png", ebiten.FilterDefault)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 var gameOver = false
 
 func main() {
 	var snakeNumber int32
 	var  gameId int32
+	gameStarted = false
 
+	//aMap = commons.Map{GameStarted: false}
 	// Set up a connection to the matchMaking.
 	matchMakingConn, err := grpc.Dial(matchMakingAddress, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
@@ -84,7 +142,6 @@ func main() {
 			//Convert message to game drawable game state
 			messageMap := in.GameState
 
-			var aMap commons.Map
 			var fruitPosition commons.Point
 			fruitPosition = commons.Point{
 				X: int(messageMap.FruitPosition.X),
@@ -112,27 +169,38 @@ func main() {
 				Width:         int(messageMap.Width),
 				Height:        int(messageMap.Height),
 				GameOver: messageMap.GameOver,
+				//GameStarted: true,
 			}
 			gameOver = aMap.GameOver
+			gameStarted = true
 
 			DrawMap(aMap, int(snakeNumber))
 		}
 	}()
 
 
-	reader := bufio.NewReader(os.Stdin)
-	for !gameOver {
-		char, _, err := reader.ReadRune()
-		if err == nil && !gameOver{
-			if value, found := commons.Directions[char]; found {
-				log.Println("match! %v %v", char, value )
-				direction := &game_communicator.DirectionRequest{SnakeNumber: snakeNumber, SnakeDirection: int32(value), GameId: gameId}
-				if err := stream.Send(direction); err != nil {
-					log.Fatalf("Failed to send. error: %v", err)
+	go func(){
+		reader := bufio.NewReader(os.Stdin)
+		for !gameOver {
+			char, _, err := reader.ReadRune()
+			if err == nil && !gameOver{
+				if value, found := commons.Directions[char]; found {
+					log.Println("match! %v %v", char, value )
+					direction := &game_communicator.DirectionRequest{SnakeNumber: snakeNumber, SnakeDirection: int32(value), GameId: gameId}
+					if err := stream.Send(direction); err != nil {
+						log.Fatalf("Failed to send. error: %v", err)
+					}
 				}
 			}
-		}
 
+		}
+		stream.CloseSend()
+	}()
+
+
+	ebiten.SetWindowSize(640, 480)
+	ebiten.SetWindowTitle("Hello, World!")
+	if err := ebiten.RunGame(&Game{}); err != nil {
+		log.Fatal(err)
 	}
-	stream.CloseSend()
 }
