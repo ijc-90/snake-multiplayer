@@ -147,9 +147,12 @@ func (s *server) SetDirectionsAndUpdateGame(stream game_communicator.GameCommuni
 				tick(&gameBoardPointer.gameMap)
 
 
-				err2 := notifyGameState(gameBoardPointer)
+				connectionsStillOpened, err2 := notifyGameState(gameBoardPointer)
 				if err2 != nil {
 					return err2
+				}
+				if !connectionsStillOpened{
+					return nil
 				}
 
 				if (gameBoardPointer.gameMap.GameOver){
@@ -173,7 +176,7 @@ func (s *server) SetDirectionsAndUpdateGame(stream game_communicator.GameCommuni
 
 }
 
-func notifyGameState(gameBoard *gameBoard) error {
+func notifyGameState(gameBoard *gameBoard) (bool, error) {
 	mapPointer := gameBoard.gameMap
 	fruitPositionRequest := &game_communicator.Point{X: int32(mapPointer.FruitPosition.X), Y: int32(mapPointer.FruitPosition.Y)}
 
@@ -198,13 +201,17 @@ func notifyGameState(gameBoard *gameBoard) error {
 		GameOver: mapPointer.GameOver,
 	}
 	newGameState := &game_communicator.GameStateRequest{GameState: &aMapRequest}
+	var notifiedSomeone bool
+	notifiedSomeone = false
 	for _, stream := range gameBoard.streams {
 		if err := stream.Send(newGameState); err != nil {
 			log.Printf("Error notifying game state, %v\n", err)
+		}else{
+			notifiedSomeone = true
 		}
 	}
 
-	return nil
+	return notifiedSomeone,nil
 }
 
 func (s *server) SetDirection(ctx context.Context, in *game_communicator.DirectionRequest) (*game_communicator.DirectionResponse, error) {
