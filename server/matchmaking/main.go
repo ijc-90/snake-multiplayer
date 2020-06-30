@@ -49,7 +49,7 @@ func (s *server) GetGame(ctx context.Context, request *matchmaking.MatchMakingRe
 
 		createdGame, err := requestNewGameCreationToGameServer()
 
-		fmt.Printf(" created game %p ... %v \n", createdGame)
+		fmt.Printf(" created game %v\n", createdGame)
 		currentGameId = createdGame.GameId
 
 		matchMakingResponse := matchmaking.MatchMakingResponse{

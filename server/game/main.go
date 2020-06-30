@@ -78,7 +78,7 @@ func tick( mapPointer *commons.Map){
 
 
 func (s *server) CreateMatch(ctx context.Context, in *game_communicator.MatchRequest) (*game_communicator.MatchResponse, error) {
-	fmt.Printf("Creating match, currentGameNumber %v \n", currentGameNumber)
+	fmt.Printf("Creating match. CurrentGameNumber %v. Currently maintaining %v games\n", currentGameNumber,len(games))
 	error := internalCreateMatch(currentGameNumber)
 	response := &game_communicator.MatchResponse{
 		GameId: int32(currentGameNumber),
@@ -149,13 +149,19 @@ func (s *server) SetDirectionsAndUpdateGame(stream game_communicator.GameCommuni
 
 				connectionsStillOpened, err2 := notifyGameState(gameBoardPointer)
 				if err2 != nil {
+					fmt.Printf("Error notifying to streams. Closing game session broadcast. GameID: %v \n", gameBoardPointer.gameMap.GameId)
+					delete(games, gameBoardPointer.gameMap.GameId)
 					return err2
 				}
 				if !connectionsStillOpened{
+					fmt.Printf("Could not stream to anyone. Closing game session broadcast. GameID: %v \n", gameBoardPointer.gameMap.GameId)
+					delete(games, gameBoardPointer.gameMap.GameId)
 					return nil
 				}
 
 				if (gameBoardPointer.gameMap.GameOver){
+					fmt.Printf("Game over, terminating state broadcast. GameID %v \n", gameBoardPointer.gameMap.GameId)
+					delete(games, gameBoardPointer.gameMap.GameId)
 					return nil
 				}
 				time.Sleep(commons.TickInterval * time.Millisecond)
@@ -166,9 +172,11 @@ func (s *server) SetDirectionsAndUpdateGame(stream game_communicator.GameCommuni
 	for {
 		in, err := stream.Recv()
 		if err == io.EOF {
+			fmt.Printf("EOF received, connection with client terminated. GameID %v \n", gameBoardPointer.gameMap.GameId )
 			return nil
 		}
 		if err != nil {
+			fmt.Printf("Error receiving, connection with client terminated. GameID %v \n", gameBoardPointer.gameMap.GameId )
 			return err
 		}
 		gameBoardPointer.gameMap.Snakes[in.GetSnakeNumber()-1].Direction = int(in.GetSnakeDirection())
