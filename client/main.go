@@ -13,7 +13,6 @@ import (
 	"image/color"
 	"io"
 	"log"
-	"math/rand"
 	"os"
 	"time"
 )
@@ -25,26 +24,30 @@ const (
 
 var aMap commons.Map
 var gameStarted bool
+var keyPressed chan int
 
 
 type Game struct{}
 func (g *Game) Update(screen *ebiten.Image) error {
+	for k := ebiten.Key(0); k <= ebiten.KeyMax; k++ {
+		if ebiten.IsKeyPressed(k) {
+			keyPressed <- int(k)
+		}
+	}
 	return nil
 }
 func (g *Game) Draw(screen *ebiten.Image) {
 
-	//fmt.Printf("map representation %v\n", aMap)
 	if !gameStarted {
 		ebitenutil.DebugPrint(screen, "Loading or waiting for a match!")
 	}else {
 		screen.Fill(color.RGBA{0xff, 0xff, 0xff, 0xff})
 
-		firstPos := aMap.Snakes[0].Position.Multiply(57)
-		secondPos := aMap.Snakes[0].Position.Multiply(57)
-		fruitPos := aMap.FruitPosition.Multiply(57)
+		firstPos := aMap.Snakes[0].Position.Multiply(30)
+		secondPos := aMap.Snakes[1].Position.Multiply(30)
+		fruitPos := aMap.FruitPosition.Multiply(30)
 
 		var op *ebiten.DrawImageOptions
-
 		op = &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64(firstPos.X), float64(firstPos.Y))
 		screen.DrawImage(snakeOneImage, op)
@@ -54,13 +57,14 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		op = &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64(secondPos.X), float64(secondPos.Y))
 		screen.DrawImage(snakeTwoImage, op)
+
 		op = &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64(fruitPos.X), float64(fruitPos.Y))
 		screen.DrawImage(fruitImage, op)
 	}
 }
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return 320, 240
+	return 30*commons.Width , 30*commons.Height
 }
 
 var snakeOneImage *ebiten.Image
@@ -69,7 +73,8 @@ var fruitImage *ebiten.Image
 
 func init() {
 	var err error
-	snakeImage, _, err = ebitenutil.NewImageFromFile("images/snake.png", ebiten.FilterDefault)
+	snakeOneImage, _, err = ebitenutil.NewImageFromFile("images/snake.png", ebiten.FilterDefault)
+	snakeTwoImage, _, err = ebitenutil.NewImageFromFile("images/snake2.png", ebiten.FilterDefault)
 	fruitImage, _, err = ebitenutil.NewImageFromFile("images/gopher2.png", ebiten.FilterDefault)
 	if err != nil {
 		log.Fatal(err)
@@ -81,6 +86,7 @@ var gameOver = false
 func main() {
 	var snakeNumber int32
 	var  gameId int32
+	keyPressed = make(chan int)
 	gameStarted = false
 
 	//aMap = commons.Map{GameStarted: false}
@@ -197,8 +203,23 @@ func main() {
 		stream.CloseSend()
 	}()
 
+	go func(c chan int) {
+		for {
+			var keyPressed int
+			keyPressed = <-c
+			value, found := commons.Directions[rune(keyPressed)]
 
-	ebiten.SetWindowSize(640, 480)
+			if  found {
+				direction := &game_communicator.DirectionRequest{SnakeNumber: snakeNumber, SnakeDirection: int32(value), GameId: gameId}
+				if err := stream.Send(direction); err != nil {
+					log.Fatalf("Failed to send. error: %v", err)
+				}
+			}
+		}
+	}(keyPressed)
+
+
+	ebiten.SetWindowSize(30*commons.Width , 30*commons.Height )
 	ebiten.SetWindowTitle("Hello, World!")
 	if err := ebiten.RunGame(&Game{}); err != nil {
 		log.Fatal(err)

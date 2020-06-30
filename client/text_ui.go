@@ -18,10 +18,6 @@ func DrawMap(aMap commons.Map, playerId int){
 		println("Game is over, press enter key to exit")
 		return
 	}
-	fmt.Printf(	"%v,%v",aMap.Snakes[0].Position.X,aMap.Snakes[0].Position.Y)
-	fmt.Println()
-	fmt.Printf("%v,%v",aMap.Snakes[1].Position.X,aMap.Snakes[1].Position.Y)
-	fmt.Println()
 	topBottomLine := strings.Repeat("#", (aMap.Width + 2)*3)
 	fmt.Println(topBottomLine)
 
